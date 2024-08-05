@@ -9,8 +9,8 @@ using StockAPI.context;
 
 namespace StockAPI.Migrations
 {
-    [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DatabaseContext))]
+    partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,35 @@ namespace StockAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("StockAPI.Models.Product", b =>
+                {
+                    b.Property<string>("Sku")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UpdateBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UpdateDate")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Sku");
+
+                    b.ToTable("Products");
+                });
 
             modelBuilder.Entity("StockAPI.Models.User", b =>
                 {

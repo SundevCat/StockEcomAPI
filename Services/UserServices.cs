@@ -6,9 +6,9 @@ using StockAPI.Models;
 namespace StockAPI.Services;
 public class UserService
 {
-    private readonly UserContext _context;
+    private readonly DatabaseContext _context;
 
-    public UserService(UserContext context)
+    public UserService(DatabaseContext context)
     {
         _context = context;
     }
