@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StockAPI.context;
+using StockAPI.Models;
 using StockAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);

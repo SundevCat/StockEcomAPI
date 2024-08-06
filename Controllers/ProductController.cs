@@ -80,7 +80,7 @@ public class ProductController : ControllerBase
             return NotFound(new { message = "sku not found" });
         }
         product.Quantity += quantity;
-        product.UpdateDate = DateTime.Now.ToString("dd/MMMM/yyyy HH:mm:ss");
+        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
         product.UpdateBy = updateBy;
         await _productService.UpdateProduct(product);
         var result = await _productService.GetProductBySku(sku);
@@ -99,7 +99,7 @@ public class ProductController : ControllerBase
             return NotFound(new { message = "sku not found" });
         }
         product.Quantity -= quantity;
-        product.UpdateDate = DateTime.Now.ToString("dd/MMMM/yyyy HH:mm:ss");
+        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
         product.UpdateBy = updateBy;
         await _productService.UpdateProduct(product);
         var result = await _productService.GetProductBySku(sku);
@@ -112,33 +112,82 @@ public class ProductController : ControllerBase
     [HttpPatch("{updateBy}")]
     public async Task<ActionResult<List<Product>>> AddQuantityMultiProduct(List<Product> products, string updateBy)
     {
-        List<Object> productList = new List<Object>();
-        foreach (var product in products)
+        if (products.Any())
         {
-            var result = await _productService.GetProductBySku(product.Sku);
-            if (result == null)
+            List<Object> productList = new List<Object>();
+            foreach (var update in products)
             {
-                productList.Add(new
+                var product = await _productService.GetProductBySku(update.Sku);
+                if (product != null)
                 {
-                    sku = product.Sku,
-                    message = "sku not found",
-                });
-            }
-            else
-            {
-                product.UpdateDate = DateTime.Now.ToString("dd/MMMM/yyyy HH:mm:ss");
-                product.UpdateBy = updateBy;
-                product.Quantity += result.Quantity;
-                // await _productService.UpdateProduct(product);
-                productList.Add(new
-                {
-                    sku = result.Sku,
-                    quantity = product.Quantity
-                });
-            }
+                    product.Quantity += update.Quantity;
+                    product.UpdateBy = updateBy;
+                    product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+                    productList.Add(new
+                    {
+                        sku = update.Sku,
+                        quantity = product.Quantity
 
+                    });
+                    await _productService.UpdateProduct(product);
+                }
+                else
+                {
+                    productList.Add(new
+                    {
+                        sku = update.Sku,
+                        quantity = "sku not found"
+
+                    });
+                }
+            }
+            productList.Add(new
+            {
+                updateBy = updateBy
+            });
+            return Ok(productList);
         }
-        return Ok(productList);
+        return BadRequest();
+    }
+    [HttpPatch("{updateBy}")]
+    public async Task<ActionResult<List<Product>>> CutQuantityMultiProduct(List<Product> products, string updateBy)
+    {
+        if (products.Any())
+        {
+            List<Object> productList = new List<Object>();
+            foreach (var update in products)
+            {
+                var product = await _productService.GetProductBySku(update.Sku);
+                if (product != null)
+                {
+                    product.Quantity -= update.Quantity;
+                    product.UpdateBy = updateBy;
+                    product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+                    productList.Add(new
+                    {
+                        sku = update.Sku,
+                        quantity = product.Quantity
+
+                    });
+                    await _productService.UpdateProduct(product);
+                }
+                else
+                {
+                    productList.Add(new
+                    {
+                        sku = update.Sku,
+                        quantity = "sku not found"
+
+                    });
+                }
+            }
+            productList.Add(new
+            {
+                updateBy = updateBy
+            });
+            return Ok(productList);
+        }
+        return BadRequest();
     }
 
 }

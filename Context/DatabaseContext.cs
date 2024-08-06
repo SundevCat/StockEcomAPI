@@ -11,6 +11,7 @@ public class DatabaseContext : DbContext
     }
     public DbSet<User> User { get; private set; }
     public DbSet<Product> Products { get; private set; }
+    public DbSet<Log> Logs { get; private set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
