@@ -15,6 +15,7 @@ public class UserService
 
     public async Task<List<User>> GetAllUsers() => await _context.User.ToListAsync();
     public async Task<User> GetUserById(string id) => await _context.User.FirstOrDefaultAsync(user => user.Id == id);
+    public async Task<User> GetUserByName(string name) => await _context.User.FirstOrDefaultAsync(user => user.Name == name);
     public async Task CreateUser(User user)
     {
         _context.User.Add(user);

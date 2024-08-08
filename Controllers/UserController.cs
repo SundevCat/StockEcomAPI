@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using StockAPI.Models;
@@ -9,9 +10,11 @@ namespace StockAPI.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserService _userservice;
-    public UserController(UserService userService)
+    private readonly HashService _hashService;
+    public UserController(UserService userService, HashService hashService)
     {
         _userservice = userService;
+        _hashService = hashService;
     }
 
     [HttpGet]
@@ -35,6 +38,23 @@ public class UserController : ControllerBase
         }
         return Ok(user);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<User>> Login(User user)
+    {
+        var checkuser = await _userservice.GetUserByName(user.Name);
+        if (checkuser != null)
+        {
+            var checkpassword = _hashService.Verifypassword(checkuser.Password, user.Password);
+            if (checkpassword)
+            {
+                return Ok(checkuser.Id);
+            }
+            return NotFound();
+        }
+        return NotFound();
+    }
+
     [HttpPost]
     public async Task<ActionResult<User>> AddUser([FromBody] User user)
     {
@@ -44,6 +64,7 @@ public class UserController : ControllerBase
         {
             return Conflict(new { message = "user already exists" });
         }
+        user.Password = _hashService.HashPassword(user.Password);
         await _userservice.CreateUser(user);
         return Ok(user);
 

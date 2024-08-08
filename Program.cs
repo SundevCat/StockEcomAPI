@@ -11,6 +11,7 @@ builder.Services.AddDbContext<DatabaseContext>(option =>
     option.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(10, 4, 21))
     ));
+builder.Services.AddScoped<HashService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddEndpointsApiExplorer();
