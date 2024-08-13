@@ -1,11 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using StockAPI.Models;
 using StockAPI.Services;
 
 namespace StockAPI.Controllers;
-
 [ApiController]
+[Authorize(Roles = "plantoys")]
 [Route("api/[controller]/[action]")]
 public class ProductController : ControllerBase
 {
@@ -71,38 +72,38 @@ public class ProductController : ControllerBase
         await _productService.DeleteProduct(sku);
         return Ok(new { message = "sku " + sku + " has been deleted" });
     }
-    [HttpPatch("{sku}/{quantity}/{updateBy}")]
-    public async Task<ActionResult> AddQuantitySingleProduct(string sku, int quantity, string updateBy)
+    [HttpPatch("{updateBy}")]
+    public async Task<ActionResult> AddQuantitySingleProduct([FromBody] Product product, string updateBy)
     {
-        var product = await _productService.GetProductBySku(sku);
-        if (product == null)
+        var products = await _productService.GetProductBySku(product.Sku);
+        if (products == null)
         {
             return NotFound(new { message = "sku not found" });
         }
-        product.Quantity += quantity;
-        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
-        product.UpdateBy = updateBy;
-        await _productService.UpdateProduct(product);
-        var result = await _productService.GetProductBySku(sku);
+        products.Quantity += product.Quantity;
+        products.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+        products.UpdateBy = updateBy;
+        await _productService.UpdateProduct(products);
+        var result = await _productService.GetProductBySku(product.Sku);
         return Ok(new
         {
             message = "add stock success",
             result
         });
     }
-    [HttpPatch("{sku}/{quantity}/{updateBy}")]
-    public async Task<ActionResult> CutQuantitySingleProduct(string sku, int quantity, string updateBy)
+    [HttpPatch("{updateBy}")]
+    public async Task<ActionResult> CutQuantitySingleProduct([FromBody] Product product, string updateBy)
     {
-        var product = await _productService.GetProductBySku(sku);
-        if (product == null)
+        var products = await _productService.GetProductBySku(product.Sku);
+        if (products == null)
         {
             return NotFound(new { message = "sku not found" });
         }
-        product.Quantity -= quantity;
-        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
-        product.UpdateBy = updateBy;
-        await _productService.UpdateProduct(product);
-        var result = await _productService.GetProductBySku(sku);
+        products.Quantity -= product.Quantity;
+        products.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+        products.UpdateBy = updateBy;
+        await _productService.UpdateProduct(products);
+        var result = await _productService.GetProductBySku(product.Sku);
         return Ok(new
         {
             message = "cut stock success",

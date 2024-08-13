@@ -1,0 +1,71 @@
+
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using StockAPI.Models;
+using StockAPI.Services;
+
+namespace StockAPI.Controllers;
+[AllowAnonymous]
+[ApiController]
+[Route("api/[controller]/[action]")]
+public class AuthController : Controller
+{
+    private readonly UserService _userservice;
+    private readonly HashService _hashservice;
+    private readonly IConfiguration _configuration;
+    public AuthController(UserService userService, HashService hashService, IConfiguration configuration)
+    {
+        _userservice = userService;
+        _hashservice = hashService;
+        _configuration = configuration;
+    }
+    [HttpPost]
+    public async Task<ActionResult<User>> Login([FromBody] User user)
+    {
+        var checkUser = await _userservice.GetUserByEmail(user.Email);
+        if (checkUser != null)
+        {
+            var checkpassword = _hashservice.Verifypassword(checkUser.Password, user.Password);
+            if (checkpassword)
+            {
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["secret:key"]));
+                var signigCredentaials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                var clamis = new List<Claim>
+            {
+                new Claim("id",checkUser.Id),
+                new Claim(ClaimTypes.Role,"plantoys")
+            };
+
+                var tokenOption = new JwtSecurityToken(
+                    issuer: _configuration["secret:issuer"],
+                    audience: _configuration["secret:audience"],
+                    claims: clamis,
+                    signingCredentials: signigCredentaials
+                );
+
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOption);
+                return Ok(tokenString);
+            }
+            return NotFound();
+        }
+        return NotFound();
+    }
+    [HttpPost]
+    public async Task<ActionResult<User>> Register([FromBody] User user)
+    {
+        user.Id = Guid.NewGuid().ToString();
+        var result = await _userservice.GetUserByName(user.Name);
+        if (result != null)
+        {
+            return Conflict(new { message = "user alerady exits" });
+        }
+        user.Password = _hashservice.HashPassword(user.Password);
+        await _userservice.CreateUser(user);
+        return Ok(new { message = " created success" });
+    }
+}

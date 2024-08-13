@@ -12,6 +12,6 @@ public class Product
     public string Status { get; set; }
     public string UpdateDate { get; set; }
     public string UpdateBy { get; set; }
-
+    public string Barcode { get; set; }
 
 }
