@@ -17,10 +17,12 @@ namespace StockAPI.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserService _userservice;
+    private readonly HashService _hashService;
 
-    public UserController(UserService userService)
+    public UserController(UserService userService, HashService hashService)
     {
         _userservice = userService;
+        _hashService = hashService;
     }
 
     [HttpGet]
@@ -68,6 +70,29 @@ public class UserController : ControllerBase
             return Ok(new { message = "update complate" });
         }
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<User>> ChangePassword(string id, [FromBody] User user)
+    {
+        var userCheck = await _userservice.GetUserById(id);
+        if (userCheck != null)
+        {
+            var passwordCheck = _hashService.Verifypassword(userCheck.Password, user.Password);
+            if (passwordCheck)
+            {
+                userCheck.Password = _hashService.HashPassword(user.Password);
+                await _userservice.UpdateUser(userCheck);
+                return Ok(new { message = "password changed" });
+            }
+            else
+            {
+                return NotFound(new { message = "password not match" });
+            }
+        }
+        return BadRequest();
+    }
+
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(String id)
     {
