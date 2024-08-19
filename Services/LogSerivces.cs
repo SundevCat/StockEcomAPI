@@ -12,4 +12,9 @@ public class LogService
     }
 
     public async Task<List<Log>> GetAllLogs() => await _context.Logs.ToListAsync();
+    public async Task Createlogs(Log logs)
+    {
+        await _context.Logs.AddAsync(logs);
+        await _context.SaveChangesAsync();
+    }
 }

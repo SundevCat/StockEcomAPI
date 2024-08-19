@@ -52,6 +52,10 @@ namespace StockAPI.Migrations
                     b.Property<string>("Sku")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Barcode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("longtext");
