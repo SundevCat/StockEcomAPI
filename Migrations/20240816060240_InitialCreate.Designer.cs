@@ -12,8 +12,8 @@ using StockAPI.context;
 namespace StockAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240806092528_updatelogtable")]
-    partial class updatelogtable
+    [Migration("20240816060240_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,6 +55,10 @@ namespace StockAPI.Migrations
                     b.Property<string>("Sku")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Barcode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -89,6 +93,10 @@ namespace StockAPI.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 
