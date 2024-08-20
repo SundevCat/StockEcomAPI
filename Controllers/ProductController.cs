@@ -11,9 +11,11 @@ namespace StockAPI.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly ProductService _productService;
-    public ProductController(ProductService productService)
+    private readonly LogService _logService;
+    public ProductController(ProductService productService, LogService logService)
     {
         _productService = productService;
+        _logService = logService;
     }
 
     [HttpGet]
@@ -47,6 +49,38 @@ public class ProductController : ControllerBase
         }
         await _productService.CreateProduct(product);
         return Ok(product);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<List<Product>>> AddMultiProduct([FromBody] List<Product> productList)
+    {
+        if (productList == null || productList.Count == 0)
+        {
+            return BadRequest();
+        }
+        else
+        {
+            List<Object> productExits = new List<Object>();
+            foreach (var product in productList)
+            {
+                var result = await _productService.GetProductBySku(product.Sku);
+                if (result != null)
+                {
+                    productExits.Add(new
+                    {
+                        sku = result.Sku
+                    });
+                }
+            }
+            if (productExits.Count != 0)
+            {
+                productExits.Add(new { message = "sku has already exits" });
+                return Conflict(productExits);
+            }
+            await _productService.CreateMultiProduct(productList);
+            return Ok(productList.Select(p => new { p.Sku, p.ProductName }));
+
+        }
     }
     [HttpPut("{sku}")]
     public async Task<ActionResult<Product>> UpdateProduct(string sku, [FromBody] Product product)
@@ -146,6 +180,13 @@ public class ProductController : ControllerBase
             {
                 updateBy = updateBy
             });
+            Log log = new Log();
+            log.Id = Guid.NewGuid().ToString();
+            log.Timestamp = DateTime.Now;
+            log.Descripttion = "Add stock multiplier";
+            log.UpdateBy = updateBy;
+            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => "\"" + name + "\"")) + " }"; ;
+            await _logService.Createlogs(log);
             return Ok(productList);
         }
         return BadRequest();

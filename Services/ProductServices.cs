@@ -16,7 +16,12 @@ public class ProductService
     public async Task<Product> GetProductBySku(string sku) => await _context.Products.FirstOrDefaultAsync(product => product.Sku == sku);
     public async Task CreateProduct(Product product)
     {
-        _context.Products.Add(product);
+        await _context.Products.AddAsync(product);
+        await _context.SaveChangesAsync();
+    }
+    public async Task CreateMultiProduct(List<Product> products)
+    {
+        await _context.Products.AddRangeAsync(products);
         await _context.SaveChangesAsync();
     }
     public async Task UpdateProduct(Product product)

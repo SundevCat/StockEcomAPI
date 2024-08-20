@@ -17,4 +17,5 @@ public class DatabaseContext : DbContext
     {
         modelBuilder.Entity<Product>().HasKey(p => p.Sku);
     }
+
 }
