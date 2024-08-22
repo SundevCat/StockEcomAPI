@@ -17,12 +17,13 @@ public class AuthController : Controller
 {
     private readonly UserService _userservice;
     private readonly HashService _hashservice;
-    private readonly IConfiguration _configuration;
-    public AuthController(UserService userService, HashService hashService, IConfiguration configuration)
+    private readonly TokenServices _tokenservice;
+
+    public AuthController(UserService userService, HashService hashService, TokenServices tokenServices)
     {
         _userservice = userService;
         _hashservice = hashService;
-        _configuration = configuration;
+        _tokenservice = tokenServices;
     }
     [HttpPost]
     public async Task<ActionResult<User>> Login([FromBody] User user)
@@ -33,28 +34,13 @@ public class AuthController : Controller
             var checkpassword = _hashservice.Verifypassword(checkUser.Password, user.Password);
             if (checkpassword)
             {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["secret:key"]));
-                var signigCredentaials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var clamis = new List<Claim>
-            {
-                new Claim("id",checkUser.Id),
-                new Claim(ClaimTypes.Role,"plantoys")
-            };
-
-                var tokenOption = new JwtSecurityToken(
-                    issuer: _configuration["secret:issuer"],
-                    audience: _configuration["secret:audience"],
-                    claims: clamis,
-                    signingCredentials: signigCredentaials
-                );
-
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOption);
+                var tokenString = _tokenservice.CreateToken(checkUser.Id);
                 return Ok(tokenString);
             }
-            return NotFound();
         }
         return NotFound();
     }
+
     [HttpPost]
     public async Task<ActionResult<User>> Register([FromBody] User user)
     {

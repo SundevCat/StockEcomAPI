@@ -47,6 +47,7 @@ public class ProductController : ControllerBase
         {
             return Conflict(new { message = "sku has already been" });
         }
+        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
         await _productService.CreateProduct(product);
         return Ok(product);
     }
@@ -119,6 +120,14 @@ public class ProductController : ControllerBase
         products.UpdateBy = updateBy;
         await _productService.UpdateProduct(products);
         var result = await _productService.GetProductBySku(product.Sku);
+
+        Log log = new Log();
+        log.Id = Guid.NewGuid().ToString();
+        log.Timestamp = DateTime.Now;
+        log.Descripttion = "Add stock";
+        log.UpdateBy = updateBy;
+        log.logsSku = product.Sku;
+        await _logService.Createlogs(log);
         return Ok(new
         {
             message = "add stock success",
@@ -138,6 +147,14 @@ public class ProductController : ControllerBase
         products.UpdateBy = updateBy;
         await _productService.UpdateProduct(products);
         var result = await _productService.GetProductBySku(product.Sku);
+
+        Log log = new Log();
+        log.Id = Guid.NewGuid().ToString();
+        log.Timestamp = DateTime.Now;
+        log.Descripttion = "Cut stock";
+        log.UpdateBy = updateBy;
+        log.logsSku = product.Sku;
+        await _logService.Createlogs(log);
         return Ok(new
         {
             message = "cut stock success",
@@ -183,7 +200,7 @@ public class ProductController : ControllerBase
             Log log = new Log();
             log.Id = Guid.NewGuid().ToString();
             log.Timestamp = DateTime.Now;
-            log.Descripttion = "Add stock multiplier";
+            log.Descripttion = "Add stock";
             log.UpdateBy = updateBy;
             log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => "\"" + name + "\"")) + " }"; ;
             await _logService.Createlogs(log);
@@ -227,6 +244,13 @@ public class ProductController : ControllerBase
             {
                 updateBy = updateBy
             });
+            Log log = new Log();
+            log.Id = Guid.NewGuid().ToString();
+            log.Timestamp = DateTime.Now;
+            log.Descripttion = "Cut stock";
+            log.UpdateBy = updateBy;
+            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => "\"" + name + "\"")) + " }"; ;
+            await _logService.Createlogs(log);
             return Ok(productList);
         }
         return BadRequest();
