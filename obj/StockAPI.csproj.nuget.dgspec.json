@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Chirapong\\Desktop\\Project\\dotnet\\StockEcomAPI\\StockAPI.csproj": {}
+    "C:\\Users\\chirapong\\Desktop\\react\\angular\\StockAPI\\StockAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Chirapong\\Desktop\\Project\\dotnet\\StockEcomAPI\\StockAPI.csproj": {
+    "C:\\Users\\chirapong\\Desktop\\react\\angular\\StockAPI\\StockAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chirapong\\Desktop\\Project\\dotnet\\StockEcomAPI\\StockAPI.csproj",
+        "projectUniqueName": "C:\\Users\\chirapong\\Desktop\\react\\angular\\StockAPI\\StockAPI.csproj",
         "projectName": "StockAPI",
-        "projectPath": "C:\\Users\\Chirapong\\Desktop\\Project\\dotnet\\StockEcomAPI\\StockAPI.csproj",
-        "packagesPath": "C:\\Users\\Chirapong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chirapong\\Desktop\\Project\\dotnet\\StockEcomAPI\\obj\\",
+        "projectPath": "C:\\Users\\chirapong\\Desktop\\react\\angular\\StockAPI\\StockAPI.csproj",
+        "packagesPath": "C:\\Users\\chirapong\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\chirapong\\Desktop\\react\\angular\\StockAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Chirapong\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\chirapong\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -87,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

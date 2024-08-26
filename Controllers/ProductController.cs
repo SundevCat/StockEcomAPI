@@ -69,13 +69,13 @@ public class ProductController : ControllerBase
                 {
                     productExits.Add(new
                     {
-                        sku = result.Sku
+                        sku = result.Sku,
+                        productName = result.ProductName
                     });
                 }
             }
             if (productExits.Count != 0)
             {
-                productExits.Add(new { message = "sku has already exits" });
                 return Conflict(productExits);
             }
             await _productService.CreateMultiProduct(productList);
