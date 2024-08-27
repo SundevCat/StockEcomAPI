@@ -52,6 +52,39 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
+
+
+    [HttpPost]
+    public async Task<ActionResult<List<Product>>> ValidateAddMultiProduct([FromBody] List<Product> productList)
+    {
+        if (productList == null || productList.Count == 0)
+        {
+            return BadRequest();
+        }
+        else
+        {
+            List<Object> productExits = new List<Object>();
+            foreach (var product in productList)
+            {
+                var result = await _productService.GetProductBySku(product.Sku);
+                if (result != null)
+                {
+                    productExits.Add(new
+                    {
+                        sku = result.Sku,
+                        productName = result.ProductName
+                    });
+                }
+            }
+            if (productExits.Count != 0)
+            {
+                return Conflict(productExits);
+            }
+            return Ok(productList.Select(p => new { p.Sku, p.ProductName }));
+        }
+    }
+
+
     [HttpPost]
     public async Task<ActionResult<List<Product>>> AddMultiProduct([FromBody] List<Product> productList)
     {
@@ -80,7 +113,6 @@ public class ProductController : ControllerBase
             }
             await _productService.CreateMultiProduct(productList);
             return Ok(productList.Select(p => new { p.Sku, p.ProductName }));
-
         }
     }
     [HttpPut("{sku}")]
@@ -178,7 +210,7 @@ public class ProductController : ControllerBase
                     productList.Add(new
                     {
                         sku = update.Sku,
-                        quantity = product.Quantity
+                        quantity = update.Quantity
 
                     });
                     await _productService.UpdateProduct(product);
@@ -193,10 +225,6 @@ public class ProductController : ControllerBase
                     });
                 }
             }
-            productList.Add(new
-            {
-                updateBy = updateBy
-            });
             Log log = new Log();
             log.Id = Guid.NewGuid().ToString();
             log.Timestamp = DateTime.Now;
@@ -225,7 +253,7 @@ public class ProductController : ControllerBase
                     productList.Add(new
                     {
                         sku = update.Sku,
-                        quantity = product.Quantity
+                        quantity = update.Quantity
 
                     });
                     await _productService.UpdateProduct(product);
@@ -240,10 +268,6 @@ public class ProductController : ControllerBase
                     });
                 }
             }
-            productList.Add(new
-            {
-                updateBy = updateBy
-            });
             Log log = new Log();
             log.Id = Guid.NewGuid().ToString();
             log.Timestamp = DateTime.Now;
