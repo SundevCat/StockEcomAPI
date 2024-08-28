@@ -91,7 +91,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<DatabaseContext>(option =>
     option.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(10, 4, 21))
+        // new MySqlServerVersion(new Version(10, 4, 21))
+        new MySqlServerVersion(new Version(8, 0, 39))
     ));
 builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<TokenServices>();

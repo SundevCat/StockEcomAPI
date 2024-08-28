@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StockAPI.context;
 using StockAPI.Models;
+using System.Linq;
 
 namespace StockAPI.Services;
 
@@ -12,7 +13,9 @@ public class ProductService
         _context = context;
     }
 
-    public async Task<List<Product>> GetAllProducts() => await _context.Products.ToListAsync();
+    public async Task<List<Product>> GetAllProducts() => await _context.Products.OrderByDescending(e => e.UpdateDate).ToListAsync();
+
+
     public async Task<Product> GetProductBySku(string sku) => await _context.Products.FirstOrDefaultAsync(product => product.Sku == sku);
     public async Task CreateProduct(Product product)
     {

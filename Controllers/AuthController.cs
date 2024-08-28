@@ -44,12 +44,12 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<ActionResult<User>> Register([FromBody] User user)
     {
-        user.Id = Guid.NewGuid().ToString();
-        var result = await _userservice.GetUserByName(user.Name);
-        if (result != null)
+        var checkEmail = await _userservice.GetUserByEmail(user.Email);
+        if (checkEmail != null)
         {
-            return Conflict(new { message = "user alerady exits" });
+            return Conflict(new { message = "email alerady exits" });
         }
+        user.Id = Guid.NewGuid().ToString();
         user.Password = _hashservice.HashPassword(user.Password);
         await _userservice.CreateUser(user);
         return Ok(new { message = " created success" });
