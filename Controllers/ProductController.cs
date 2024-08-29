@@ -247,16 +247,29 @@ public class ProductController : ControllerBase
                 var product = await _productService.GetProductBySku(update.Sku);
                 if (product != null)
                 {
-                    product.Quantity -= update.Quantity;
-                    product.UpdateBy = updateBy;
-                    product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
-                    productList.Add(new
+                    if (product.Quantity > 0)
                     {
-                        sku = update.Sku,
-                        quantity = update.Quantity
+                        product.Quantity -= update.Quantity;
+                        product.UpdateBy = updateBy;
+                        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+                        productList.Add(new
+                        {
+                            sku = update.Sku,
+                            quantity = update.Quantity
 
-                    });
-                    await _productService.UpdateProduct(product);
+                        });
+                        await _productService.UpdateProduct(product);
+                    }
+                    else
+                    {
+                        productList.Add(new
+                        {
+                            sku = update.Sku,
+                            quantity = "เบิกเกินจำนวน"
+
+                        });
+                    }
+
                 }
                 else
                 {

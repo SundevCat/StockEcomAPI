@@ -14,8 +14,6 @@ public class ProductService
     }
 
     public async Task<List<Product>> GetAllProducts() => await _context.Products.OrderByDescending(e => e.UpdateDate).ToListAsync();
-
-
     public async Task<Product> GetProductBySku(string sku) => await _context.Products.FirstOrDefaultAsync(product => product.Sku == sku);
     public async Task CreateProduct(Product product)
     {
