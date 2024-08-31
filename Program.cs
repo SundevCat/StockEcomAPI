@@ -110,6 +110,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 app.MapGet("/auth", [AllowAnonymous] (HttpContext context) =>
 {
     var id = context.User.FindFirst("id")?.Value;
@@ -117,6 +119,7 @@ app.MapGet("/auth", [AllowAnonymous] (HttpContext context) =>
 
     return Results.Ok($"Authenticated:{role} : {id}");
 });
+
 app.UseCors("Plantoys");
 app.UseHttpsRedirection();
 app.UseAuthentication();

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: stockapi
+  template:
+    metadata:
+      labels:
+        app: stockapi
+    spec:
+      containers:
+      - name: stockapi
+        image: chirapong01/stockapi:latest
+        ports:
+        - containerPort: 8081

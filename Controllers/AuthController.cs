@@ -25,6 +25,7 @@ public class AuthController : Controller
         _hashservice = hashService;
         _tokenservice = tokenServices;
     }
+
     [HttpPost]
     public async Task<ActionResult<User>> Login([FromBody] User user)
     {
