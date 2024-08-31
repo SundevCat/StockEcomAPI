@@ -16,4 +16,4 @@ spec:
       - name: stockapi
         image: chirapong01/stockapi:latest
         ports:
-        - containerPort: 8081
+        - containerPort: 80
