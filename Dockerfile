@@ -20,4 +20,5 @@ RUN dotnet publish "StockAPI.csproj" -c $configuration -o /app/publish /p:UseApp
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY FileTemplate/ImportProductTemplate.xlsx ./FileTemplate/ImportProductTemplate.xlsx
 ENTRYPOINT ["dotnet", "StockAPI.dll"]

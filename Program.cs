@@ -110,8 +110,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-    app.UseSwagger();
-    app.UseSwaggerUI();
+
 app.MapGet("/auth", [AllowAnonymous] (HttpContext context) =>
 {
     var id = context.User.FindFirst("id")?.Value;
