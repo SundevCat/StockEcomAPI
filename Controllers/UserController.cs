@@ -71,25 +71,17 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<User>> ChangePassword(string id, [FromBody] User user)
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<User>> ChangePassword(string id, User user)
     {
         var userCheck = await _userservice.GetUserById(id);
-        if (userCheck != null)
+        if (userCheck == null)
         {
-            var passwordCheck = _hashService.Verifypassword(userCheck.Password, user.Password);
-            if (passwordCheck)
-            {
-                userCheck.Password = _hashService.HashPassword(user.Password);
-                await _userservice.UpdateUser(userCheck);
-                return Ok(new { message = "password changed" });
-            }
-            else
-            {
-                return NotFound(new { message = "password not match" });
-            }
+            return BadRequest();
         }
-        return BadRequest();
+        userCheck.Password = _hashService.HashPassword(user.Password);
+        await _userservice.UpdateUser(userCheck);
+        return Ok(new { message = "password changed" });
     }
 
 

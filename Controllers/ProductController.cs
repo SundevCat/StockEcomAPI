@@ -28,6 +28,16 @@ public class ProductController : ControllerBase
         }
         return Ok(products);
     }
+    [HttpGet]
+    public async Task<ActionResult<List<Product>>> GetAllProductsActives()
+    {
+        var products = await _productService.GetAllProductsActives();
+        if (products == null)
+        {
+            return NotFound();
+        }
+        return Ok(products);
+    }
 
     [HttpGet("{sku}")]
     public async Task<ActionResult<Product>> GetProductBySku(string sku)
@@ -124,6 +134,7 @@ public class ProductController : ControllerBase
         }
         else
         {
+            product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
             await _productService.UpdateProduct(product);
             return Ok(new { message = " product updated successfully" });
         }
