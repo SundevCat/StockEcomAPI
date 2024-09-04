@@ -210,6 +210,8 @@ public class ProductController : ControllerBase
         if (products.Any())
         {
             List<Object> productList = new List<Object>();
+            int quantity = 0;
+            int countProduct = 0;
             foreach (var update in products)
             {
                 var product = await _productService.GetProductBySku(update.Sku);
@@ -224,6 +226,8 @@ public class ProductController : ControllerBase
                         quantity = update.Quantity
 
                     });
+                    countProduct += 1;
+                    quantity += update.Quantity;
                     await _productService.UpdateProduct(product);
                 }
                 else
@@ -241,7 +245,9 @@ public class ProductController : ControllerBase
             log.Timestamp = DateTime.Now;
             log.Descripttion = "Add stock";
             log.UpdateBy = updateBy;
-            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => "\"" + name + "\"")) + " }"; ;
+            log.Quantity = quantity;
+            log.CountProduct = countProduct;
+            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => name)) + " }"; ;
             await _logService.Createlogs(log);
             return Ok(productList);
         }
@@ -253,6 +259,8 @@ public class ProductController : ControllerBase
         if (products.Any())
         {
             List<Object> productList = new List<Object>();
+            int quantity = 0;
+            int countProduct = 0;
             foreach (var update in products)
             {
                 var product = await _productService.GetProductBySku(update.Sku);
@@ -269,6 +277,8 @@ public class ProductController : ControllerBase
                             quantity = update.Quantity
 
                         });
+                        countProduct += 1;
+                        quantity += update.Quantity;
                         await _productService.UpdateProduct(product);
                     }
                     else
@@ -297,7 +307,9 @@ public class ProductController : ControllerBase
             log.Timestamp = DateTime.Now;
             log.Descripttion = "Cut stock";
             log.UpdateBy = updateBy;
-            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => "\"" + name + "\"")) + " }"; ;
+            log.Quantity = quantity;
+            log.CountProduct = countProduct;
+            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => name)) + " }"; ;
             await _logService.Createlogs(log);
             return Ok(productList);
         }

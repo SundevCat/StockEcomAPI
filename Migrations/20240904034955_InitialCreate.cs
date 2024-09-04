@@ -23,6 +23,8 @@ namespace StockAPI.Migrations
                     Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     UpdateBy = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    CountProduct = table.Column<int>(type: "int", nullable: false),
                     Descripttion = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     logsSku = table.Column<string>(type: "longtext", nullable: false)

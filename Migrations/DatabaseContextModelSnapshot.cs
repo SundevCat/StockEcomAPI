@@ -27,9 +27,15 @@ namespace StockAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int>("CountProduct")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descripttion")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime(6)");
@@ -45,61 +51,6 @@ namespace StockAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("logs");
-                });
-
-            modelBuilder.Entity("StockAPI.Models.Product", b =>
-                {
-                    b.Property<string>("Sku")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Barcode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UpdateBy")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UpdateDate")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Sku");
-
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("StockAPI.Models.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

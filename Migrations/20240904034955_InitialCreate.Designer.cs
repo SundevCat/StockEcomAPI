@@ -12,7 +12,7 @@ using StockAPI.context;
 namespace StockAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240828031648_InitialCreate")]
+    [Migration("20240904034955_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -30,9 +30,15 @@ namespace StockAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int>("CountProduct")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descripttion")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime(6)");

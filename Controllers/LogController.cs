@@ -26,4 +26,27 @@ public class LogController : Controller
         }
         return Ok(logs);
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Log>> GetLogsById(string id)
+    {
+        var log = await _logService.GetLogByid(id);
+        if (log == null)
+        {
+            return NotFound();
+        }
+        return Ok(log);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteLog(string id)
+    {
+        var log = await _logService.GetLogByid(id);
+        if (log == null)
+        {
+            return NotFound();
+        }
+        await _logService.DeleteLogs(id);
+        return Ok(new { message = "Delete successfully" });
+    }
 }
