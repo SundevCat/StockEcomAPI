@@ -57,7 +57,7 @@ public class ProductController : ControllerBase
         {
             return Conflict(new { message = "sku has already been" });
         }
-        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+        product.UpdateDate = DateTime.Now.ToString("dd MMM yyyy HH:mm:ss");
         await _productService.CreateProduct(product);
         return Ok(product);
     }
@@ -134,7 +134,7 @@ public class ProductController : ControllerBase
         }
         else
         {
-            product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+            product.UpdateDate = DateTime.Now.ToString("dd MMM yyyy HH:mm:ss");
             await _productService.UpdateProduct(product);
             return Ok(new { message = " product updated successfully" });
         }
@@ -159,7 +159,7 @@ public class ProductController : ControllerBase
             return NotFound(new { message = "sku not found" });
         }
         products.Quantity += product.Quantity;
-        products.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+        products.UpdateDate = DateTime.Now.ToString("dd MMM yyyy HH:mm:ss");
         products.UpdateBy = updateBy;
         await _productService.UpdateProduct(products);
         var result = await _productService.GetProductBySku(product.Sku);
@@ -186,7 +186,7 @@ public class ProductController : ControllerBase
             return NotFound(new { message = "sku not found" });
         }
         products.Quantity -= product.Quantity;
-        products.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+        products.UpdateDate = DateTime.Now.ToString("dd MMM yyyy HH:mm:ss");
         products.UpdateBy = updateBy;
         await _productService.UpdateProduct(products);
         var result = await _productService.GetProductBySku(product.Sku);
@@ -219,7 +219,7 @@ public class ProductController : ControllerBase
                 {
                     product.Quantity += update.Quantity;
                     product.UpdateBy = updateBy;
-                    product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+                    product.UpdateDate = DateTime.Now.ToString("dd MMM yyyy HH:mm:ss");
                     productList.Add(new
                     {
                         sku = update.Sku,
@@ -270,7 +270,7 @@ public class ProductController : ControllerBase
                     {
                         product.Quantity -= update.Quantity;
                         product.UpdateBy = updateBy;
-                        product.UpdateDate = DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss");
+                        product.UpdateDate = DateTime.Now.ToString("dd MMM yyyy HH:mm:ss");
                         productList.Add(new
                         {
                             sku = update.Sku,
