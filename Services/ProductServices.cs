@@ -31,6 +31,12 @@ public class ProductService
         _context.Products.Update(product);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateMultiProducts(List<Product> product)
+    {
+        _context.Products.UpdateRange(product);
+        await _context.SaveChangesAsync();
+    }
     public async Task DeleteProduct(string sku)
     {
         var product = await _context.Products.FindAsync(sku);

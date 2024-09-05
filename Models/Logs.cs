@@ -12,5 +12,6 @@ public class Log
     public int Quantity { get; set; }
     public int CountProduct { get; set; }
     public string Descripttion { get; set; }
+    public string Note { get; set; }
     public string logsSku { get; set; }
 }

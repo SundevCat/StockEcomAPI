@@ -12,7 +12,7 @@ using StockAPI.context;
 namespace StockAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240904034955_InitialCreate")]
+    [Migration("20240904093917_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -34,6 +34,10 @@ namespace StockAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Descripttion")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("longtext");
 

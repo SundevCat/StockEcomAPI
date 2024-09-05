@@ -82,7 +82,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Plantoys", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200","https://sundevcat.github.io","https://ecomstock.vercel.app/")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });

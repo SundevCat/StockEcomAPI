@@ -150,8 +150,8 @@ public class ProductController : ControllerBase
         await _productService.DeleteProduct(sku);
         return Ok(new { message = "sku " + sku + " has been deleted" });
     }
-    [HttpPatch("{updateBy}")]
-    public async Task<ActionResult> AddQuantitySingleProduct([FromBody] Product product, string updateBy)
+    [HttpPatch("{updateBy}/{note}")]
+    public async Task<ActionResult> AddQuantitySingleProduct([FromBody] Product product, string updateBy, string note)
     {
         var products = await _productService.GetProductBySku(product.Sku);
         if (products == null)
@@ -169,6 +169,7 @@ public class ProductController : ControllerBase
         log.Timestamp = DateTime.Now;
         log.Descripttion = "Add stock";
         log.UpdateBy = updateBy;
+        log.UpdateBy = note;
         log.logsSku = product.Sku;
         await _logService.Createlogs(log);
         return Ok(new
@@ -177,8 +178,8 @@ public class ProductController : ControllerBase
             result
         });
     }
-    [HttpPatch("{updateBy}")]
-    public async Task<ActionResult> CutQuantitySingleProduct([FromBody] Product product, string updateBy)
+    [HttpPatch("{updateBy}/{note}")]
+    public async Task<ActionResult> CutQuantitySingleProduct([FromBody] Product product, string updateBy, string note)
     {
         var products = await _productService.GetProductBySku(product.Sku);
         if (products == null)
@@ -196,6 +197,7 @@ public class ProductController : ControllerBase
         log.Timestamp = DateTime.Now;
         log.Descripttion = "Cut stock";
         log.UpdateBy = updateBy;
+        log.Note = note;
         log.logsSku = product.Sku;
         await _logService.Createlogs(log);
         return Ok(new
@@ -204,12 +206,13 @@ public class ProductController : ControllerBase
             result
         });
     }
-    [HttpPatch("{updateBy}")]
-    public async Task<ActionResult<List<Product>>> AddQuantityMultiProduct(List<Product> products, string updateBy)
+    [HttpPatch("{updateBy}/{note}")]
+    public async Task<ActionResult<List<Product>>> AddQuantityMultiProduct(List<Product> products, string updateBy, string note)
     {
         if (products.Any())
         {
             List<Object> productList = new List<Object>();
+            List<Product> copyProduct = new List<Product>();
             int quantity = 0;
             int countProduct = 0;
             foreach (var update in products)
@@ -228,7 +231,7 @@ public class ProductController : ControllerBase
                     });
                     countProduct += 1;
                     quantity += update.Quantity;
-                    await _productService.UpdateProduct(product);
+                    copyProduct.Add(product);
                 }
                 else
                 {
@@ -245,20 +248,23 @@ public class ProductController : ControllerBase
             log.Timestamp = DateTime.Now;
             log.Descripttion = "Add stock";
             log.UpdateBy = updateBy;
+            log.Note = note;
             log.Quantity = quantity;
             log.CountProduct = countProduct;
-            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => name)) + " }"; ;
+            log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => name)) + " }";
+            await _productService.UpdateMultiProducts(copyProduct);
             await _logService.Createlogs(log);
             return Ok(productList);
         }
         return BadRequest();
     }
-    [HttpPatch("{updateBy}")]
-    public async Task<ActionResult<List<Product>>> CutQuantityMultiProduct(List<Product> products, string updateBy)
+    [HttpPatch("{updateBy}/{note}")]
+    public async Task<ActionResult<List<Product>>> CutQuantityMultiProduct(List<Product> products, string updateBy, string note)
     {
         if (products.Any())
         {
             List<Object> productList = new List<Object>();
+            List<Product> copyProducts = new List<Product>();
             int quantity = 0;
             int countProduct = 0;
             foreach (var update in products)
@@ -279,7 +285,7 @@ public class ProductController : ControllerBase
                         });
                         countProduct += 1;
                         quantity += update.Quantity;
-                        await _productService.UpdateProduct(product);
+                        copyProducts.Add(product);
                     }
                     else
                     {
@@ -305,11 +311,13 @@ public class ProductController : ControllerBase
             Log log = new Log();
             log.Id = Guid.NewGuid().ToString();
             log.Timestamp = DateTime.Now;
-            log.Descripttion = "Cut stock";
+            log.Descripttion = "Reduce stock";
             log.UpdateBy = updateBy;
             log.Quantity = quantity;
+            log.Note = note;
             log.CountProduct = countProduct;
             log.logsSku = "{ " + string.Join(", ", productList.ConvertAll(name => name)) + " }"; ;
+            await _productService.UpdateMultiProducts(copyProducts);
             await _logService.Createlogs(log);
             return Ok(productList);
         }

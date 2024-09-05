@@ -34,6 +34,10 @@ namespace StockAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -52,6 +56,8 @@ namespace StockAPI.Migrations
 
                     b.ToTable("logs");
                 });
+
+            
 #pragma warning restore 612, 618
         }
     }
